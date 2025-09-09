@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Fondo di Emergenza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            padding: 20px;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 48px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 16px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        
+        .header p {
+            opacity: 0.85;
+            font-size: 1.2em;
+            font-weight: 400;
+        }
+        
+        .form-container {
+            padding: 48px 40px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 1em;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            font-family: inherit;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .input-group input[type="number"] {
+            position: relative;
+        }
+        
+        .euro-symbol {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-weight: 600;
+            pointer-events: none;
+            margin-top: 36px;
+        }
+        
+        .input-group input[type="number"] {
+            padding-left: 40px;
+        }
+        
+        .results {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        
+        .results.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .results h3 {
+            font-size: 1.875em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .results-subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .amount-display {
+            text-align: center;
+            margin: 32px 0;
+            padding: 32px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .amount {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -0.02em;
+        }
+        
+        .amount-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .stat-value {
+            font-size: 1.75em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 0.95em;
+            opacity: 0.85;
+        }
+        
+        .email-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 32px;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .email-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(220, 38, 38, 0.3);
+        }
+        
+        .disclaimer {
+            background: #f1f5f9;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 32px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .disclaimer p {
+            color: #64748b;
+            font-size: 0.9em;
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-container {
+                padding: 32px 24px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .amount {
+                font-size: 2.5em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .amount {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>💰 Calcolatore Fondo di Emergenza</h1>
+                <p>Calcola il tuo fondo di emergenza ideale per una sicurezza finanziaria duratura</p>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="monthlyExpenses">Spese mensili totali</label>
+                    <div style="position: relative;">
+                        <span class="euro-symbol">€</span>
+                        <input type="number" id="monthlyExpenses" placeholder="2500" min="0" step="50">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="jobSecurity">Stabilità lavorativa</label>
+                    <select id="jobSecurity">
+                        <option value="">Seleziona la tua situazione...</option>
+                        <option value="3">Molto stabile (dipendente pubblico, contratto indeterminato)</option>
+                        <option value="4">Abbastanza stabile (contratto indeterminato privato)</option>
+                        <option value="6">Media stabilità (contratto determinato, freelance regolare)</option>
+                        <option value="8">Bassa stabilità (lavoro irregolare, startup)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="dependents">Persone a carico</label>
+                    <select id="dependents">
+                        <option value="0">Nessuna persona a carico</option>
+                        <option value="1">1 persona a carico</option>
+                        <option value="2">2 persone a carico</option>
+                        <option value="3">3+ persone a carico</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="healthIssues">Situazione sanitaria</label>
+                    <select id="healthIssues">
+                        <option value="0">Ottima salute, nessun problema particolare</option>
+                        <option value="0.5">Qualche problema di salute minore</option>
+                        <option value="1">Problemi di salute significativi</option>
+                        <option value="1.5">Gravi problemi di salute cronici</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="results" id="results">
+                <div class="results-header">
+                    <h3>Il tuo Fondo di Emergenza Ideale</h3>
+                    <p class="results-subtitle">Calcolato sulla base della tua situazione specifica</p>
+                </div>
+                
+                <div class="amount-display">
+                    <div class="amount" id="emergencyAmount">€ 0</div>
+                    <div class="amount-label">Importo raccomandato</div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthsCovered">0</div>
+                        <div class="stat-label">Mesi di copertura</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">€ <span id="monthlySaving">0</span></div>
+                        <div class="stat-label">Risparmio mensile</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value"><span id="timeToGoal">0</span> mesi</div>
+                        <div class="stat-label">Tempo per l'obiettivo</div>
+                    </div>
+                </div>
+                
+                <button class="email-btn" onclick="sendEmail()">
+                    📧 Invia Risultati via Email
+                </button>
+            </div>
+            
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> Tutti i calcoli sono stime basate su statistiche pubbliche e buone pratiche finanziarie. I risultati dovrebbero essere utilizzati solo come guida generale. Per una consulenza personalizzata, considera di consultare un consulente finanziario qualificato.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let calculationResults = {};
+        
+        function calculateEmergencyFund() {
+            const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+            const jobSecurity = parseFloat(document.getElementById('jobSecurity').value) || 0;
+            const dependents = parseInt(document.getElementById('dependents').value) || 0;
+            const healthIssues = parseFloat(document.getElementById('healthIssues').value) || 0;
+            
+            if (monthlyExpenses === 0 || jobSecurity === 0) {
+                document.getElementById('results').classList.remove('show');
+                return;
+            }
+            
+            // Calcolo base: mesi di job security + fattori aggiuntivi
+            let baseMonths = jobSecurity;
+            let additionalMonths = dependents + healthIssues;
+            let totalMonths = Math.max(3, Math.min(12, baseMonths + additionalMonths));
+            
+            const emergencyFund = monthlyExpenses * totalMonths;
+            const monthlySaving = Math.round(emergencyFund * 0.08); // 8% del totale al mese
+            const timeToGoal = Math.ceil(emergencyFund / monthlySaving);
+            
+            // Salva i risultati per l'email
+            calculationResults = {
+                monthlyExpenses: monthlyExpenses,
+                totalMonths: totalMonths,
+                emergencyFund: emergencyFund,
+                monthlySaving: monthlySaving,
+                timeToGoal: timeToGoal,
+                jobSecurity: document.getElementById('jobSecurity').options[document.getElementById('jobSecurity').selectedIndex].text,
+                dependents: dependents,
+                healthIssues: document.getElementById('healthIssues').options[document.getElementById('healthIssues').selectedIndex].text
+            };
+            
+            // Animazione dei numeri
+            animateNumber('emergencyAmount', 0, emergencyFund, 1500, '€ ');
+            animateNumber('monthsCovered', 0, totalMonths, 1000);
+            animateNumber('monthlySaving', 0, monthlySaving, 1200);
+            animateNumber('timeToGoal', 0, timeToGoal, 1000);
+            
+            document.getElementById('results').classList.add('show');
+        }
+        
+        function animateNumber(elementId, start, end, duration, prefix = '', suffix = '') {
+            const element = document.getElementById(elementId);
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(start + (end - start) * easeOutQuart);
+                
+                element.textContent = prefix + current.toLocaleString('it-IT') + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        function sendEmail() {
+            if (!calculationResults.emergencyFund) {
+                alert('Completa prima il calcolo inserendo tutti i dati richiesti!');
+                return;
+            }
+            
+            const subject = encodeURIComponent('Il mio Fondo di Emergenza - Risultati Calcolatore');
+            const body = encodeURIComponent(`
+Ciao,
+
+ho appena calcolato il mio fondo di emergenza ideale. Ecco i risultati:
+
+📊 DATI DELLA MIA SITUAZIONE:
+• Spese mensili: €${calculationResults.monthlyExpenses.toLocaleString('it-IT')}
+• Stabilità lavorativa: ${calculationResults.jobSecurity}
+• Persone a carico: ${calculationResults.dependents}
+• Situazione sanitaria: ${calculationResults.healthIssues}
+
+💰 RISULTATI DEL CALCOLO:
+• Fondo di emergenza raccomandato: €${calculationResults.emergencyFund.toLocaleString('it-IT')}
+• Mesi di spese coperte: ${calculationResults.totalMonths}
+• Risparmio mensile suggerito: €${calculationResults.monthlySaving.toLocaleString('it-IT')}
+• Tempo stimato per raggiungere l'obiettivo: ${calculationResults.timeToGoal} mesi
+
+💡 PROSSIMI PASSI:
+1. Aprire un conto deposito separato dedicato al fondo di emergenza
+2. Impostare un trasferimento automatico mensile
+3. Rivedere il calcolo ogni 6-12 mesi o in caso di cambiamenti significativi
+4. Considerare investimenti a basso rischio una volta raggiunto l'obiettivo
+
+Calcolato il ${new Date().toLocaleDateString('it-IT')}
+
+---
+Questo calcolo è stato generato dal Calcolatore Fondo di Emergenza
+            `);
+            
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+        
+        // Event listeners con debounce per performance
+        let timeoutId;
+        function debounceCalculate() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(calculateEmergencyFund, 300);
+        }
+        
+        document.getElementById('monthlyExpenses').addEventListener('input', debounceCalculate);
+        document.getElementById('jobSecurity').addEventListener('change', calculateEmergencyFund);
+        document.getElementById('dependents').addEventListener('change', calculateEmergencyFund);
+        document.getElementById('healthIssues').addEventListener('change', calculateEmergencyFund);
+        
+        // Focus sul primo campo al caricamento
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('monthlyExpenses').focus();
+        });
+    </script>
+</body>
+</html>

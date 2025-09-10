@@ -5,34 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcolatore Fondo di Emergenza</title>
     <style>
-  /* ====== FUNNIFIN THEME ======
-     Se hai i codici ufficiali, sostituiscili qui sotto.
-  */
+  /* ====== FUNNIFIN THEME (aggiornato) ====== */
   :root{
-    --ff-primary:#1e3a8a;       /* Blu scuro (navy) */
-    --ff-primary-2:#0f3d91;     /* Blu profondo per gradienti */
-    --ff-accent:#16a34a;        /* Verde acceso per CTA/ok */
-    --ff-accent-2:#22c55e;      /* Verde chiaro per gradienti */
-    --ff-bg:#f7fafc;            /* Sfondo app */
-    --ff-surface:#ffffff;       /* Card */
-    --ff-text:#0f172a;          /* Testo primario (slate-900) */
-    --ff-text-muted:#475569;    /* Testo secondario */
-    --ff-border:#e2e8f0;        /* Bordi leggeri */
-    --ff-focus:rgba(30,58,138,0.18); /* alone focus blu */
-    --ff-warning:#fbbf24;       /* Giallo badge */
-    --ff-danger:#dc2626;        /* Rosso errori */
+    --ff-primary:#1DB0B9;       /* primario (ex blu) */
+    --ff-primary-2:#11868F;     /* variante più scura per gradienti/hover */
+    --ff-accent:#DFF1F4;        /* accento (ex verde), molto chiaro */
+    --ff-accent-2:#C7E7EC;      /* accento leggermente più saturo per sfumature */
+    --ff-bg:#f7fafc;
+    --ff-surface:#ffffff;
+    --ff-text:#0f172a;
+    --ff-text-muted:#475569;
+    --ff-border:#e2e8f0;
+    --ff-focus:rgba(29,176,185,0.22); /* alone focus in tinta col primario */
+    --ff-warning:#fbbf24;
+    --ff-danger:#dc2626;
   }
 
-  /* Typography & base */
   *{margin:0;padding:0;box-sizing:border-box}
-  @supports (font-variation-settings: normal){
-    /* Import veloce Inter variabile */
-    @font-face{
-      font-family:"Inter";
-      src: url("https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMa-V8.woff2") format("woff2");
-      font-weight: 100 900; font-style: normal; font-display: swap;
-    }
-  }
   body{
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--ff-bg);
@@ -40,13 +29,12 @@
   }
 
   .container{
-    max-width: 800px; margin:0 auto; background:var(--ff-surface);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px -15px rgba(15,23,42,.25);
+    max-width:800px; margin:0 auto; background:var(--ff-surface);
+    border-radius:20px; box-shadow:0 10px 30px -15px rgba(15,23,42,.25);
     overflow:hidden; border:1px solid var(--ff-border);
   }
 
-  /* Header */
+  /* Header con primario */
   .header{
     background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-primary-2) 100%);
     color:#fff; padding:48px 40px; text-align:center; position:relative;
@@ -62,7 +50,6 @@
   .header h1{ font-size:2.5em; margin-bottom:12px; font-weight:800; letter-spacing:-.02em }
   .header p{ opacity:.95; font-size:1.1em }
 
-  /* Form */
   .form-container{ padding:48px 40px }
   .form-grid{
     display:grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
@@ -85,45 +72,47 @@
   }
   .input-group input[type="number"]{ padding-left:40px }
 
-  /* Results card — gradient verde brand */
+  /* Results: accento chiaro con testo scuro per contrasto */
   .results{
     background: linear-gradient(135deg, var(--ff-accent) 0%, var(--ff-accent-2) 100%);
-    color:#fff; padding:36px; border-radius:16px; margin-top:28px;
+    color: var(--ff-text); /* testo scuro su sfondo chiaro */
+    padding:36px; border-radius:16px; margin-top:28px;
     opacity:0; transform: translateY(16px); transition: all .35s ease;
-    border: 1px solid rgba(255,255,255,.25);
+    border:1px solid #cfe6ea;
   }
   .results.show{ opacity:1; transform: translateY(0) }
   .results-header{ text-align:center; margin-bottom:18px }
-  .results h3{ font-size:1.75em; margin-bottom:6px; font-weight:800 }
-  .results-subtitle{ opacity:.95 }
+  .results h3{ font-size:1.75em; margin-bottom:6px; font-weight:800; color:var(--ff-text) }
+  .results-subtitle{ opacity:.9 }
 
   .amount-display{
     text-align:center; margin:24px 0; padding:24px;
-    background: rgba(255,255,255,0.12); border-radius:14px; backdrop-filter: blur(8px);
+    background: rgba(255,255,255,0.6); border-radius:14px; backdrop-filter: blur(6px);
   }
-  .amount{ font-size:3.2em; font-weight:900; margin-bottom:6px; letter-spacing:-.01em }
+  .amount{ font-size:3.2em; font-weight:900; margin-bottom:6px; letter-spacing:-.01em; color:var(--ff-primary-2) }
   .amount-label{ opacity:.95; font-weight:600 }
 
   .stats-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px; margin-top:20px }
   .stat-card{
-    background: rgba(255,255,255,0.14); padding:18px; border-radius:12px; text-align:center; backdrop-filter: blur(4px)
+    background: rgba(255,255,255,0.7); padding:18px; border-radius:12px; text-align:center; backdrop-filter: blur(4px);
+    border:1px solid #e6f2f4;
   }
-  .stat-value{ font-size:1.5em; font-weight:800 }
+  .stat-value{ font-size:1.5em; font-weight:800; color:var(--ff-primary-2) }
   .stat-label{ font-size:.95em; opacity:.95 }
 
-  /* CTA principale — blu → verde on hover */
+  /* CTA: primario pieno, hover più scuro */
   .premium-btn{
     background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-primary-2) 100%);
     color:#fff; padding:16px 28px; border:none; border-radius:14px; font-size:1.05em;
-    font-weight:800; cursor:pointer; margin-top:24px; transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    font-weight:800; cursor:pointer; margin-top:24px; transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
     width:100%;
-    box-shadow: 0 10px 20px -10px rgba(30,58,138,.6);
+    box-shadow: 0 10px 20px -10px rgba(17,134,143,.45);
     position:relative; overflow:hidden;
   }
   .premium-btn:hover{
     transform: translateY(-1px);
-    box-shadow: 0 16px 28px -12px rgba(30,58,138,.55);
-    background: linear-gradient(135deg, var(--ff-accent) 0%, var(--ff-accent-2) 100%);
+    box-shadow: 0 16px 28px -12px rgba(17,134,143,.55);
+    filter: brightness(0.98);
   }
   .premium-btn::before{
     content:''; position:absolute; inset:0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
@@ -134,7 +123,7 @@
     background: var(--ff-warning); color:#78350f; font-size:.75em; padding:4px 8px; border-radius:6px; font-weight:900; margin-left:8px;
   }
 
-  /* Disclaimer */
+  /* Disclaimer con accento sul bordo in tinta col primario */
   .disclaimer{
     background:#f1f5f9; padding:20px; border-radius:12px; margin-top:24px; border-left:4px solid var(--ff-primary);
   }
@@ -175,9 +164,9 @@
 
   .modal-buttons{ display:flex; gap:10px; margin-top:14px }
   .btn-primary{
-    flex:1; background: linear-gradient(135deg, var(--ff-accent) 0%, var(--ff-accent-2) 100%);
+    flex:1; background: linear-gradient(135deg, var(--ff-primary) 0%, var(--ff-primary-2) 100%);
     color:#fff; padding:12px 18px; border:none; border-radius:10px; font-weight:800; cursor:pointer; transition: transform .15s ease, box-shadow .2s ease;
-    box-shadow: 0 10px 20px -12px rgba(16,163,69,.7);
+    box-shadow: 0 10px 20px -12px rgba(17,134,143,.55);
   }
   .btn-primary:hover{ transform: translateY(-1px) }
   .btn-primary:disabled{ opacity:.65; cursor:not-allowed; transform:none }
@@ -214,6 +203,7 @@
     .amount{ font-size:2.1em }
   }
 </style>
+
 
 </head>
 <body>

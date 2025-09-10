@@ -477,7 +477,6 @@
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
         email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
         calculationData: calculationResults
       };
 
@@ -512,7 +511,6 @@
               { name:'firstname', value:data.firstName },
               { name:'lastname', value:data.lastName },
               { name:'email', value:data.email },
-              { name:'phone', value:data.phone || '' },
               { name:'spese_mensili', value:data.calculationData.monthlyExpenses.toString() },
               { name:'fondo_emergenza_raccomandato', value:data.calculationData.emergencyFund.toString() },
               { name:'mesi_copertura', value:data.calculationData.totalMonths.toString() },
